@@ -1,0 +1,492 @@
+
+<!DOCTYPE html>  
+<html> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/app.css" >
+    <body> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script type = "text/javascript" src="index.js"></script>  
+
+
+    <a href="http://memberenrollment.com/"></a>
+    <section class="container-fluid mb-3 mt-3">
+        <h5>Account Details:</h5>
+        <table  class="table table-bordered table-striped">
+            <tr>
+                <th>   
+                    Account
+                </th> 
+                <th>
+                Benefit Plan
+                </th>
+                <th>
+                    Subscription Type
+                </th>
+                <th>
+                    No Of Entry
+                </th>
+                
+            </tr>
+            <tr>
+                <th>   
+                    <select id="myDropdown">
+                        </select>
+                <!-- select id = "myList" onchange = "Account()"  
+                <select class="form-select" name="Account" id="Account">
+                <option>--Select the Account--</option>
+                <option value="Account1">Account1</option>
+                <option value="Account2">Account2</option>
+                <option value="Account3">Account3</option>
+                <option value="Account4">Account4</option>
+                </select> -->
+                </th> 
+                <th>
+
+                <select class="form-select" name="Benefit" id="Benefit">
+                <option>--Select the Benefit--</option>
+                <option value="Account1">Benefit1</option>
+                <option value="Account2">Benefit2</option>
+                <option value="Account3">Benefit3</option>
+                <option value="Account4">Benefit4</option>
+                </select>
+                </th>
+
+                <th>
+
+                    <select class="form-select" name="Subscription" id="Subscription" onchange="jsFunctionss(this.value)">
+                    <option>--Select the Subscription Type--</option>
+                    <option value="Subscriber + Family">Subscriber + Family</option>
+                    <option value="Subscriber Only">Subscriber Only</option>
+                    <option value="Subscriber + Spouse">Subscriber + Spouse</option>
+                    <option value="Subscriber + children">Subscriber + children</option>
+                    </select>
+                </th>
+                <th>
+
+                    <select class="form-select" id="NoofEntry" onchange="jsFunctionqq(this.value)">
+                    <option>--Select Num of Subscribers--</option>
+                    <option value='1'>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    </select>
+                </th>
+
+            </tr>   
+        </table> 
+    </section> 
+
+    <section class="container-fluid mb-3  mt-3">
+        <h5>Subscriber Details:</h5>
+        <div id="b1">  
+            <table id="t1" class="table table-bordered table-striped">         
+                <tr>
+                    <th >   
+                        Subscriber
+                    </th>
+                    <th >   
+                        Subscriber DOB
+                    </th> 
+                    <th>Gender 
+                    </th>
+                    </tr>
+            </table>
+        </div>
+    </section>
+
+    <section class="container-fluid mb-3  mt-5 text-center">
+        <input type="submit" class="btn btn-primary" value="Submit"  onclick="Toretrivedatafrompage(this.value)">
+        <input type="button" id="Export" class="btn btn-primary" value="Export" onclick="ExportToExcel('xlsx')">
+        
+    </section>
+
+    <section class="container-fluid mb-3  mt-3">
+        <h5>Output:</h5>  
+        <table id="t2" class="table table-bordered table-striped">
+            <tr>
+                <th>   
+                    Subscriber
+                </th>
+                <th>   
+                    First Name
+                </th> 
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    DOB
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Address
+                </th>
+                <th>
+                    Member ID
+                </th>
+            </tr>
+        </table> 
+    </section>
+  
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script> 
+<script> 
+debugger;
+//const dropdownHtml = await ejs.renderFile('dropdown.ejs', { options });
+document.getElementById('myDropdown').innerHTML = dropdownHtml;
+debugger;
+var xmlhttp = new XMLHttpRequest();
+var url1 = "http://100.112.45.153:8181/connector/services/v4/EnrollmentSparse?wsdl"; // Replace with the URL of the SOAP endpoint
+
+const soapRequest = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:enr="http://www.healthedge.com/connector/schema/enrollmentsparse">
+<soapenv:Header/>
+<soapenv:Body>
+   <NS1:enrollment xmlns:NS1="http://www.healthedge.com/connector/schema/enrollmentsparse">
+      <actionMode>SPARSE</actionMode>
+      <cascadeTerms>false</cascadeTerms>
+      <subscription>
+         <!-- <hccIdentifier>20020725002</hccIdentifier> -->
+         <subscriptionUDTList>
+            <listMode>DEFAULT</listMode>
+         </subscriptionUDTList>
+         <accountMatchData>
+            <accountHccIdentifier>
+               <accountHccIdentificationNumber>TEST</accountHccIdentificationNumber>
+            </accountHccIdentifier>
+         </accountMatchData>
+                             <informationSourceCode>
+            <codeSetName>InformationSource</codeSetName>
+            <codeEntry>4</codeEntry>
+<!--               <shortName>Claim</shortName>-->
+         </informationSourceCode>  
+         <claimReviewList>
+            <listMode>DEFAULT</listMode>
+         </claimReviewList>     
+      </subscription>
+
+      <member>
+         <maintenanceTypeCode>CREATE</maintenanceTypeCode>
+         <memberIsSubscriber>1</memberIsSubscriber>
+        <!-- <hccIdentifier>20020725002-00</hccIdentifier> -->
+         <individual>
+            <genderCode>Male</genderCode>
+            <birthDate>1980-01-02</birthDate>
+            <primaryName>
+               <lastName>Test23</lastName>
+               <firstName>Test23</firstName>
+<!--                  <middleName/>-->
+<!--                  <nameSuffixList>-->
+<!--                     <listMode>REPLACE</listMode>-->
+<!--                  </nameSuffixList>-->
+            </primaryName>
+            <languages>
+               <language>
+                  <primaryLanguage>1</primaryLanguage>
+                  <languageDomainCode>
+                     <codeEntry>EN</codeEntry>
+                  </languageDomainCode>
+               </language>
+            </languages>
+         </individual>
+         <physicalAddress>
+            <listMode>DEFAULT</listMode>
+            <memberPhysicalAddress>
+               <addressInfo>
+                  <postalAddress>
+                     <address>30 Corp. dr</address>
+                     <stateCode>MA</stateCode>
+                     <zipCode>01803</zipCode>
+                     <cityName>Burlington</cityName>
+                     <ignoreAddressCheck>true</ignoreAddressCheck>
+                  </postalAddress>
+                  <addressPhoneList>
+                     <listMode>REPLACE</listMode>
+                     <telephoneNumber>
+                        <phoneAreaCode>301</phoneAreaCode>
+                        <phoneNumber>1234567</phoneNumber>
+                        <individualPhoneTypeCode>
+                           <codeEntry>HP</codeEntry>
+                        </individualPhoneTypeCode>
+                     </telephoneNumber>
+                  </addressPhoneList>
+               </addressInfo>
+               <addressTypeCode>
+                  <codeSetName>IndividualAddressType</codeSetName>
+                  <codeEntry>2</codeEntry>
+               </addressTypeCode>
+            </memberPhysicalAddress>
+         </physicalAddress>
+         <relationshipToSubscriberDefinitionReference>
+            <reference>
+               <ID>Self</ID>
+            </reference>
+         </relationshipToSubscriberDefinitionReference>
+
+         <planSelection>
+            <startDate>2023-03-01</startDate>
+            <benefitPlanMatchData>
+               <benefitPlanHccId>TEST_PLAN_MK</benefitPlanHccId>
+            </benefitPlanMatchData>
+<!--               <healthCoverageMaintenanceCode>CREATE</healthCoverageMaintenanceCode>-->
+<!--               <insuranceLineCode>HLT</insuranceLineCode>-->
+         </planSelection>
+
+      </member>
+   </NS1:enrollment>
+</soapenv:Body>
+</soapenv:Envelope>
+`;
+
+
+xmlhttp.open("POST", url1, true);
+xmlhttp.setRequestHeader("Content-Type", "text/xml;charset=UTF-8");
+var response = xmlhttp.responseXML;
+console.log(response);
+
+xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        // Handle the SOAP response
+        var response = xmlhttp.responseXML;
+        console.log(response);
+    }
+};
+xmlhttp.send(soapRequest);
+
+function processResponse(response) {
+// Process the JSON response into an array. 
+var arr = JSON.parse(response);
+var i;
+var out ="<table>";
+keys = Object.keys(arr[0]);
+//Print headers
+out += "<tr>"
+for(i = 0; i < keys.length; ++i) {
+out += "<th>"+keys [i]+"</th>"
+}
+out += "</tr>";
+// Print values
+for(j = 0; j < arr.length; j++) {
+out += "<tr>"
+for(i = 0; i < keys.length; ++i) {
+out += "<td>"+arr[j][keys[i]]+"</td>"
+}
+out += "</tr>"
+}
+out += "</table>";
+}
+
+    var subscribertype="";
+    var Noofentry="";
+    var exportdata = [];
+
+    function jsFunctionqq(value) {  
+
+        // alert(value-1)
+        var codeBlock="";
+        var codeBlock1="";
+        Noofentry=value
+        // var subscribertype= document.getElementById("Subscription").innerHTML
+        //alert(subscribertype)
+        document.getElementById("t1").innerHTML="";
+        // table header
+        codeBlock1='<thead><tr>'+
+        '<th >'+   
+        'Subscriber'+
+        '</th>'+ 
+        '<th >'+   
+            'Subscriber DOB'+
+        '</th>'+ 
+        '<th>'+
+        '<B>Gender</B>'+
+        '</th>'+
+        '</tr></thead>';
+    
+        document.getElementById("t1").innerHTML=codeBlock1;
+
+        var idCount = 0;
+        for(var i=0; i < value; i++) // main count for looping 
+        {
+            var codeBlock='<table class="table table-bordered table-striped">';
+            
+            
+            if(subscribertype=="Subscriber Only" || subscribertype=="Subscriber + Family" || subscribertype=="Subscriber + Spouse"||subscribertype=="Subscriber + children")
+            // if(subscribertype=== Subsrcber[] )
+            { 
+               
+                //Object for Subscriber list 
+                let Subsrcber = [
+                    {   list: ["Subscriber"], type: "Subscriber Only"  },
+                    {   list: ["Subscriber", "Spouse", "Child"], type: "Subscriber + Family"  },
+                    {   list: ["Subscriber", "Spouse"], type: "Subscriber + Spouse"  },
+                    {   list: ["Subscriber",  "Child"], type: "Subscriber + children"  },
+
+                ];
+
+                var isFound1 = Subsrcber.some(element => {
+                    if (element.type === subscribertype) {
+                     //   console.log(element.list);
+                        for(arr of element.list){
+                            var index = element.list.indexOf(arr);
+                            codeBlock += '<tr id="test' + (idCount+1)+'">'+
+                            '<td >'+   
+                            '<label>' + arr + (i+1)+'<br></label>'+
+                            '</td>'+ 
+                            '<td id="">'+   
+                            '<input type="date" class="form-control" id="Subscriber_DOB' +  (idCount+1) + '"value ="1980-01-01">'+
+                            '</td>'+ 
+                            '<td >'+
+                            '<input type="radio" class="form-check-input" id="gender' + (idCount+1)+'" name="gender'+(idCount+1)+'"  value="male" checked> <label class="form-check-label">Male</label> '+
+                            '<input type="radio" class="form-check-input" id="gender'+ (idCount+1)+'" name="gender'+(idCount+1)+'" value="female" > <label class="form-check-label">Female</label>'+
+                            '</td >';
+                            idCount++;
+                        }
+                    }
+                });
+                codeBlock += '</table>';
+                document.getElementById("t1").innerHTML+=codeBlock;
+            }
+        }    
+    }
+    
+    function jsFunctionss(value)
+    {
+       // debugger;
+        //loadDB
+        subscribertype=value
+        //alert(subscribertype);
+    }
+    
+        var codeBlock3="";
+        var Firstname= '';
+        var lastname='';
+        var subscrib ='';
+        var dob='';
+        var gend='';
+        var subid='';
+        function Toretrivedatafrompage(value)
+        {  
+            codeBlock3='<tr>'+
+            '<th  >'+   
+            'Subscriber'+
+            '</th>'+ 
+            '<th  >'+   
+                'First Name'+
+            '</th>'+ 
+            '<th >'+
+                'Last Name'+
+            '</th>'+
+            '<th >'+
+                'DOB'+
+            '</th>'+
+            '<th >'+
+                'Gender'+
+            '</th>'+
+            '<th >'+
+                'Address'+
+            '</th>'+    
+            '<th >'+
+                'Subscriber Id'+
+            '</th>'+
+            '</tr>'
+            document.getElementById("t2").innerHTML=codeBlock3   
+
+            var min=1;
+                var max=100;
+                const rndInt = Math.floor(Math.random() * max-min+1) + min
+               // console.log(rndInt)
+
+            
+            var Address='A Royal Garden Mumbai';
+            var characters  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            var charactersLength = characters.length;
+                var TableData = new Array();
+                //debugger;
+                $('#t1 tbody tr').each(function(row, tr){
+                    TableData[row]={
+                        "Subscriber" : $(tr).find('td:eq(0)').text()
+                        , "DOB" :$(tr).find('td:eq(1) input').val()
+                        , "Gender" : $(tr).find('td:eq(2) input:checked').val()
+                        , "SubID" : $(tr).find('td:eq(3) input').val()
+                    }
+                }); 
+            
+                var test = [];
+
+                console.log(TableData);
+                    for(data of TableData)
+                    {
+                        //debugger;
+                       var subscrib =data.Subscriber;
+                       var dob=data.DOB;
+                       var gend=data.Gender;
+                       var subid=data.SubID;
+                       var min=1;
+                        var max=1000;
+                        const rndInt = Math.floor(Math.random() * max-min+1) + min
+                        //console.log(rndInt)
+
+                       // console.log(data.Subscriber);
+                       // console.log(data.DOB);
+                       // console.log(data.Gender);
+                       // console.log(data.SubID); 
+                        for ( var i = 0; i < 6; i++ ) 
+                        {
+                        Firstname += characters.charAt(Math.floor(Math.random() * charactersLength));
+                        }
+                        for ( var i = 0; i < 6; i++ ) 
+                        {
+                        lastname += characters.charAt(Math.floor(Math.random() * charactersLength));
+                        }
+                      //  console.log(Firstname);
+                       // console.log(lastname);   
+                        
+                        //write SOAPUI code 
+
+                       
+                        
+                        var codeBlock='<table class="table table-bordered table-striped">'+  
+                        '<tr id="test1"> '+
+                        '<td  >'+   
+                        '<label>'+subscrib+'<br></label>'+
+                        '</td>'+ 
+                        '<td >'+   
+                        '<label>'+Firstname+'</label>'+
+                        '</td>'+ 
+                        '<td >'+   
+                        '<label>'+lastname+'</label>'+
+                        '</td>'+ 
+                        '<td >'+   
+                        '<label>'+dob+'</label>'+
+                        '</td>'+
+                        '<td >'+   
+                        '<label>'+gend+'</label>'+
+                        '</td>'+
+                        '<td >'+   
+                        '<label>'+rndInt+Address+'</label>'+
+                        '</td>'+
+                        '<td >'+   
+                        '<label>'+rndInt+'</label>'+
+                        '</td>'+
+                        '</tr>'+
+                        '</table>';
+                        document.getElementById("t2").innerHTML+=codeBlock;
+                    } 
+                    
+    }
+
+    function ExportToExcel(type, fn, dl) 
+    {
+        //debugger;
+        var elt = document.getElementById('t2');
+        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+        return dl ?
+        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+        XLSX.writeFile(wb, fn || ('SubscriberDetails.' + (type || 'xlsx')));
+    }
+   
+
+</script>
+</body>  
+</html> 
